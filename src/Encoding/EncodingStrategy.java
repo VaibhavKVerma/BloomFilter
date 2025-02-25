@@ -4,5 +4,5 @@ import java.util.BitSet;
 import java.util.List;
 
 public interface EncodingStrategy {
-    BitSet encode(String message, int listLen);
+    List<Integer> encode(String message, int listLen);
 }

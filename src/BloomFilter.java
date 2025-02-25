@@ -2,6 +2,7 @@ import Encoding.DefaultEncoding;
 import Encoding.EncodingStrategy;
 
 import java.util.BitSet;
+import java.util.List;
 
 public class BloomFilter {
     private final BitSet bitSet;
@@ -27,16 +28,22 @@ public class BloomFilter {
         if(strategy == null) {
             throw new RuntimeException("Strategy not set");
         }
-        BitSet messageBitSet = strategy.encode(message, listLen);
-        bitSet.or(messageBitSet);
+        List<Integer> messageBits = strategy.encode(message, listLen);
+        for(int bit : messageBits) {
+            bitSet.set(bit, true);
+        }
     }
 
     public boolean lookup(String message) {
         if(strategy == null) {
             throw new RuntimeException("Strategy not set");
         }
-        BitSet messageBitSet = strategy.encode(message, listLen);
-        messageBitSet.or(bitSet);
-        return messageBitSet.equals(bitSet);
+        List<Integer> messageBits = strategy.encode(message, listLen);
+        for(int bit : messageBits) {
+            if(!bitSet.get(bit)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
